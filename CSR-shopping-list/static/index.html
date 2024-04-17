@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSR mit API-Daten</title>
+    <!-- Bootstrap CSS einbinden -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Items</h1>
+        <form id="item-form" class="mb-3">
+            <div class="form-row">
+                <div class="col">
+                    <input type="number" class="form-control" id="item-id" placeholder="ID" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" id="item-name" placeholder="Name des Artikels" required>
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" id="item-quantity" placeholder="Anzahl" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" id="item-category" placeholder="Kategorie" required>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Hinzufügen/Aktualisieren</button>
+                </div>
+            </div>
+        </form>
+        <ul id="items-list" class="list-group">
+            <!-- Items werden hier eingefügt -->
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('item-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('item-id').value;
+            const name = document.getElementById('item-name').value;
+            const quantity = document.getElementById('item-quantity').value;
+            const category = document.getElementById('item-category').value;
+
+            const item = { id, name, quantity, category };
+            const method = id ? 'PUT' : 'POST';  // PUT wenn eine ID vorhanden ist, sonst POST
+            const url = id ? `http://127.0.0.1:8000/items/${id}` : 'http://127.0.0.1:8000/items/';
+
+            await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(item)
+            });
+
+            fetchItems();  // Liste aktualisieren
+            document.getElementById('item-form').reset();  // Formular zurücksetzen
+        });
+
+        async function fetchItems() {
+            const response = await fetch('http://127.0.0.1:8000/items/');
+            const items = await response.json();
+            const itemsList = document.getElementById('items-list');
+            itemsList.innerHTML = '';  // Liste leeren bevor neue eingefügt werden
+
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = `${item.name} (Anzahl: ${item.quantity}, Kategorie: ${item.category})`;
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn btn-danger btn-sm';
+                deleteButton.textContent = 'Löschen';
+                deleteButton.onclick = function() { deleteItem(item.id); };
+                li.appendChild(deleteButton);
+                itemsList.appendChild(li);
+            });
+        }
+
+        async function deleteItem(id) {
+            await fetch(`http://127.0.0.1:8000/items/${id}`, {
+                method: 'DELETE'
+            });
+            fetchItems();  // Liste aktualisieren
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchItems);
+    </script>
+
+    <!-- Bootstrap JS und Abhängigkeiten einbinden -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

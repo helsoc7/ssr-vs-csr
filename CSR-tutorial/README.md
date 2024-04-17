@@ -1,0 +1,2 @@
+# Clientseitiges Rendering (CSR) mit statischen HTML-Dateien
+Bei clientseitigem Rendering wird das HTML auf dem Client durch Javascript dynamisch generiert, oft durch den Einsatz von Frontend-Frameworks wie React, Vue oder Angular. Hier wollen wir uns erstmal ein einfaches Beispiel anschauen, bei dem statisches HTML verwendet wird, das dann clientseitig durch JavaScript manipuliert wird. 

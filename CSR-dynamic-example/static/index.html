@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSR mit API-Daten</title>
+</head>
+<body>
+    <h1>Items</h1>
+    <ul id="items-list">
+        <!-- Items werden hier eingefügt -->
+    </ul>
+    <script>
+        async function fetchItems() {
+            const response = await fetch('http://127.0.0.1:8000/items/');
+            const items = await response.json();
+            const itemsList = document.getElementById('items-list');
+            itemsList.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.name;
+                itemsList.appendChild(li);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchItems);
+    </script>
+</body>
+</html>

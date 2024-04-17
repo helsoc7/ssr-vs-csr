@@ -1,0 +1,2 @@
+# Serverseitiges Rendering (SSR) mit FastAPI und Jinja2
+Serverseitiges Rendering bedeutet, dass der HTML-Inhalt auf dem Server generiert wird, bevor er an den Client (also den Browser) gesendet wird. Das ist besonders nützlich für SEO und die anfängliche Ladezeit der Seite. 
